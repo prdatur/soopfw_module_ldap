@@ -1,0 +1,7 @@
+;Information
+version = 1
+name = "LDAP"
+description = "Provides ldap functionality and a ldap authentication engine."
+
+;Define rights
+rights["admin.ldap.manage"] = "Allows managing LDAP-Servers."
