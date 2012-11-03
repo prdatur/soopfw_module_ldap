@@ -324,7 +324,7 @@ class LDAPInterface
 		$values[] = $value;
 
 		//Escape all values
-		ldap::escape_recursive($values);
+		Ldap::escape_recursive($values);
 		return $this->write_attributes($dn, array($attribute => $values));
 	}
 
@@ -338,7 +338,7 @@ class LDAPInterface
 	public function create_entry($dn, $attributes) {
 
 		//Escape all values
-		ldap::escape_recursive($attributes);
+		Ldap::escape_recursive($attributes);
 
 		//Unset empty values
 		foreach ($attributes AS $k => &$v) {
