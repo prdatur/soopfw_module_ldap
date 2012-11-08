@@ -82,6 +82,11 @@ class LDAPInterface
 		$this->basedn = $basedn;
 	}
 
+	/**
+	 * Connects to the LDAP-Server.
+	 *
+	 * @return boolean returns true if connection succeed, else false.
+	 */
 	public function connect() {
 		$this->disconnect();
 		if (!$con = @ldap_connect($this->server, $this->port)) {
@@ -101,6 +106,9 @@ class LDAPInterface
 		return @ldap_bind($this->connection, $this->admindn, $this->password);
 	}
 
+	/**
+	 * Disconnect from current connection.
+	 */
 	public function disconnect() {
 		if ($this->connection) {
 			@ldap_unbind($this->connection);
@@ -109,11 +117,17 @@ class LDAPInterface
 	}
 
 	/**
-	 * Search within the given base dn entries which have the given filter and return the given attributes for the found entries
+	 * Search within the given base dn entries which have the given filter and
+	 * return the given attributes for the found entries.
 	 *
-	 * @param string $base_dn the dn where we start to search
-	 * @param string $filter the filter string for ldap
-	 * @param array $attributes a set of attributes which we only want back from the result, empty array will return all fields (optional, default = array())
+	 * @param string $base_dn
+	 *   the dn where we start to search.
+	 * @param string $filter
+	 *   the filter string for ldap.
+	 * @param array $attributes
+	 *   a set of attributes which we only want back from the result, empty array will return all fields.
+	 *   (optional, default = array())
+	 *
 	 * @return array return all found entries
 	 */
 	public function search($base_dn, $filter, $attributes = array()) {
@@ -155,14 +169,21 @@ class LDAPInterface
 	}
 
 	/**
-	 * Search within the given base dn entries which have the given filter and return the given attributes for the found entries
+	 * Search within the given base dn entries which have the given filter and return
+	 * the given attributes for the found entries
 	 * With this function we only need to add the levels after the global basedn which we had configured.
 	 *
-	 * So for example if a dn is cn=foo,dc=people,dc=domain,dc=tld and we configured basedn as dc=domain,dc=tld we just need to provide cn=foo,dc=people
+	 * So for example if a dn is cn=foo,dc=people,dc=domain,dc=tld and we configured basedn as
+	 * dc=domain,dc=tld we just need to provide cn=foo,dc=people
 	 *
-	 * @param string $base_dn the dn where we start to search
-	 * @param string $filter the filter string for ldap
-	 * @param array $attributes a set of attributes which we only want back from the result, empty array will return all fields (optional, default = array())
+	 * @param string $base_dn
+	 *   the dn where we start to search.
+	 * @param string $filter
+	 *   the filter string for ldap.
+	 * @param array $attributes
+	 *   a set of attributes which we only want back from the result, empty array will return all fields.
+	 *   (optional, default = array())
+	 *
 	 * @return array return all found entries
 	 */
 	public function search_base_dn($base_dn, $filter, $attributes = array()) {
@@ -170,12 +191,15 @@ class LDAPInterface
 	}
 
 	/**
-	 * Retrieve all attributes for a given dn
+	 * Retrieve all attributes for a given dn.
 	 *
 	 * WARNING! WARNING! WARNING!
 	 * This function returns its entries with lowercase attribute names.
 	 * Don't blame me, blame PHP's own ldap_get_entries()
-	 * @param string $dn the dn
+	 *
+	 * @param string $dn
+	 *   the dn.
+	 *
 	 * @return array the values in lowercase keys
 	 */
 	public function retrieve_attributes($dn) {
@@ -214,26 +238,34 @@ class LDAPInterface
 	}
 
 	/**
-	 * Retrieve a single attribute from the given dn
+	 * Retrieve a single attribute from the given dn.
 	 *
-	 * @param string $dn the dn
-	 * @param string $attrname the attribute name
-	 * @return string the value, if it was an array, only first value will be returned, if attribute name does not exists, return null
+	 * @param string $dn
+	 *   the dn.
+	 * @param string $attrname
+	 *   the attribute name.
+	 *
+	 * @return string the value, if it was an array, only first value will be returned,
+	 *   if attribute name does not exists, return null
 	 */
 	public function retrieve_attribute($dn, $attrname) {
-		$entries = $this->retrieve_attributes($dn);
-		if (!isset($entries[strtolower($attrname)])) {
+		$v = $this->retrieve_attributes($dn);
+		if (!isset($v[strtolower($attrname)])) {
 			return null;
 		}
-		return is_array($entries[strtolower($attrname)]) ? $entries[strtolower($attrname)][0] : $entries[strtolower($attrname)];
+		return is_array($v[strtolower($attrname)]) ? $v[strtolower($attrname)][0] : $v[strtolower($attrname)];
 	}
 
 	/**
-	 * Retrieve an array attribute from the given dn
+	 * Retrieve an array attribute from the given dn.
 	 *
-	 * @param string $dn the dn
-	 * @param string $attrname the attribute name
-	 * @return array the value, if it was only one value it will transformed to an array, if attribute name does not exists, return null
+	 * @param string $dn
+	 *   the dn.
+	 * @param string $attrname
+	 *   the attribute name.
+	 *
+	 * @return array the value, if it was only one value it will transformed to an array,
+	 *   if attribute name does not exists, return null
 	 */
 	public function retrieve_attribute_array($dn, $attrname) {
 		$entries = $this->retrieve_attributes($dn);
@@ -267,12 +299,17 @@ class LDAPInterface
 	}
 
 	/**
-	 * Writes the given attributes to the dn
+	 * Writes the given attributes to the dn.
+	 *
 	 * if a value is empty for an attribute, it will be handled as deletion so it will try
 	 * to delete the attribute
-	 * @param string $dn the dn to write
-	 * @param array $attributes the attributes to write
-	 * @return boolean, true on success, else false
+	 *
+	 * @param string $dn
+	 *   the dn to write
+	 * @param array $attributes
+	 *   the attributes to write
+	 *
+	 * @return boolean true on success, else false
 	 */
 	public function write_attributes($dn, Array $attributes) {
 
@@ -307,11 +344,15 @@ class LDAPInterface
 	}
 
 	/**
-	 * Adds a value to the specified multi value attribute
+	 * Adds a value to the specified multi value attribute.
 	 *
-	 * @param string $dn the dn
-	 * @param string $attribute the attribute
-	 * @param mixed $value the value
+	 * @param string $dn
+	 *   the dn.
+	 * @param string $attribute
+	 *   the attribute.
+	 * @param mixed $value
+	 *   the value.
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function add_attribute($dn, $attribute, $value) {
@@ -329,10 +370,13 @@ class LDAPInterface
 	}
 
 	/**
-	 * Creates an ldap entry
+	 * Creates an ldap entry.
 	 *
-	 * @param string $dn the new dn
-	 * @param array $attributes the attributes for the new entry
+	 * @param string $dn
+	 *   the new dn.
+	 * @param array $attributes
+	 *   the attributes for the new entry.
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function create_entry($dn, $attributes) {
@@ -357,9 +401,11 @@ class LDAPInterface
 	}
 
 	/**
-	 * Checks if a given dn entry exist or not
+	 * Checks if a given dn entry exist or not.
 	 *
-	 * @param string $dn the dn
+	 * @param string $dn
+	 *   the dn.
+	 *
 	 * @return boolean true if exist, else false
 	 */
 	public function entry_exists($dn) {
@@ -367,12 +413,18 @@ class LDAPInterface
 	}
 
 	/**
-	 * Renames a dn
+	 * Renames a dn.
 	 *
-	 * @param string $dn The distinguished name of an LDAP entity.
-	 * @param string $newrdn The new RDN.
-	 * @param string $newparent The new parent/superior entry. (optional, default = null)
-	 * @param bool $deleteoldrdn If true the old RDN value(s) is removed, else the old RDN value(s) is retained as non-distinguished values of the entry. (optional, default = false)
+	 * @param string $dn
+	 *   The distinguished name of an LDAP entity.
+	 * @param string $newrdn
+	 *   The new RDN.
+	 * @param string $newparent
+	 *   The new parent/superior entry. (optional, default = null)
+	 * @param bool $deleteoldrdn
+	 *   If true the old RDN value(s) is removed, else the old RDN value(s) is retained as
+	 *   non-distinguished values of the entry. (optional, default = false)
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function rename_entry($dn, $newrdn, $newparent = null, $deleteoldrdn = false) {
@@ -382,8 +434,11 @@ class LDAPInterface
 	/**
 	 * Delete an entry, if recursive is set to false and the entry has childs the delete will fail.
 	 *
-	 * @param string $dn the dn to delete
-	 * @param boolean $recursive if we want to delete the entry recursive
+	 * @param string $dn
+	 *   the dn to delete.
+	 * @param boolean $recursive
+	 *   if we want to delete the entry recursive. (optional, default = false)
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function delete_entry($dn, $recursive = false) {
@@ -412,7 +467,7 @@ class LDAPInterface
 	}
 
 	/**
-	 * Deletes an attribute from the given dn
+	 * Deletes an attribute from the given dn.
 	 *
 	 * This function is used by other modules to delete attributes once they are
 	 * moved to profiles cause ldap_mod_del does not delete facsimileTelephoneNumber if
@@ -420,8 +475,11 @@ class LDAPInterface
 	 * OpenLDAP as per RFC 2252 doesn't have equality matching for facsimileTelephoneNumber
 	 * http://bugs.php.net/bug.php?id=7168
 	 *
-	 * @param string $dn the dn
-	 * @param string $attribute the attribute
+	 * @param string $dn
+	 *   the dn.
+	 * @param string $attribute
+	 *   the attribute.
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function delete_attribute($dn, $attribute) {
@@ -429,11 +487,15 @@ class LDAPInterface
 	}
 
 	/**
-	 * Removes a given value from given attribute within the given dn
+	 * Removes a given value from given attribute within the given dn.
 	 *
-	 * @param String $dn the dn to edit
-	 * @param String $attrname the attribute where we want to remove the value
-	 * @param String $value the value which we want to remove
+	 * @param string $dn
+	 *   the dn to edit.
+	 * @param string $attrname
+	 *   the attribute where we want to remove the value.
+	 * @param string $value
+	 *   the value which we want to remove.
+	 *
 	 * @return boolean true on success, else false
 	 */
 	public function remove_attribute_value($dn, $attrname, $value) {
@@ -450,9 +512,10 @@ class LDAPInterface
 	}
 
 	/**
-	 * Removes integer index keys and count entries
+	 * Removes integer index keys and count entries.
 	 *
-	 * @param array &$array the array to be proccessed
+	 * @param array &$array
+	 *   the array to be proccessed.
 	 */
 	private function remove_not_wanted_keys(&$array) {
 		foreach ($array AS $k => &$v) {
