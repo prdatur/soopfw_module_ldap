@@ -15,10 +15,16 @@ class Ldap extends ActionModul {
 	protected $default_methode = "manage";
 
 	/**
-	 * Implementation of get_admin_menu()
+	 * Implements hook: admin_menu
+	 *
+	 * Returns an array which includes all links and childs for the admin menu.
+	 * There are some special categories in which the module can be injected.
+	 * The following categories are current supported:
+	 *   style, security, content, structure, authentication, system, other
+	 *
 	 * @return array the menu
 	 */
-	public function get_admin_menu() {
+	public function hook_admin_menu() {
 
 		$childs = array();
 		$configured_servers = LDAPFactory::get_all_instances();
@@ -30,7 +36,7 @@ class Ldap extends ActionModul {
 			);
 		}
 		return array(
-			999 => array(//Order id, same order ids will be unsorted placed behind each
+			AdminMenu::CATEGORY_SECURITY => array(
 				'#id' => 'soopfw_ldap', //A unique id which will be needed to generate the submenu
 				'#title' => t("LDAP"), //The main title
 				'#link' => "/ldap/manage", // The main link
@@ -41,14 +47,15 @@ class Ldap extends ActionModul {
 						'#link' => "/admin/ldap/manage", // The main link
 						'#perm' => 'admin.ldap.manage', //Perm needed
 					),
-					array(
-						'#title' => t("Authentication"), //The main title
-						'#link' => "/admin/ldap/manage_authentication", // The main link
-						'#perm' => 'admin.ldap.manage', //Perm needed
-						'#childs' => $childs,
-					),
-				)
-			)
+				),
+			),
+			AdminMenu::CATEGORY_AUTHENTICATION => array(
+				'#id' => 'soopfw_ldap', //A unique id which will be needed to generate the submenu
+				'#title' => t("LDAP Authentication"), //The main title
+				'#link' => "/admin/ldap/manage_authentication", // The main link
+				'#perm' => 'admin.ldap.manage', //Perm needed
+				'#childs' => $childs,
+			),
 		);
 	}
 
