@@ -6,7 +6,7 @@
  * @copyright Christian Ackermann (c) 2010 - End of life
  * @author Christian Ackermann <prdatur@gmail.com>
  */
-class LdapServerObj extends AbstractDataManagment
+class LdapServerObj extends AbstractDataManagement
 {
 	/**
 	 * Define constances
