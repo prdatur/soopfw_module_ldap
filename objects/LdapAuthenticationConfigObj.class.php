@@ -5,6 +5,7 @@
  *
  * @copyright Christian Ackermann (c) 2010 - End of life
  * @author Christian Ackermann <prdatur@gmail.com>
+ * @category Objects
  */
 class LdapAuthenticationConfigObj extends AbstractDataManagement
 {
