@@ -83,9 +83,13 @@ class LDAPLoginHandler extends Object implements LoginHandler
 	/**
 	 * Checks if the user is logged in, if not we will redirect him to the login page
 	 *
-	 * @param boolean $force_not_loggedin force not logged in that the user will be redirected to the user login page
-	 * @param boolean $need_direct_handler need this login handler as valid
-	 * @return boolean true if normal behaviour should checked (Session::require_login which redirects if the is_logged_in param is set to false), false if the login handler handles this event
+	 * @param boolean $force_not_loggedin
+	 *   Force not logged in that the user will be redirected to the user login page.
+	 * @param boolean $need_direct_handler
+	 *   Need this login handler as valid.
+	 *
+	 * @return boolean true if normal behaviour should checked (Session::require_login which redirects
+	 *   if the is_logged_in param is set to false), false if the login handler handles this event.
 	 */
 	public function require_login($force_not_loggedin = false, $need_direct_handler = false) {
 		return true;
@@ -94,7 +98,7 @@ class LDAPLoginHandler extends Object implements LoginHandler
 	/**
 	 * Check if the user is logged in and log the user in if a post was provided.
 	 *
-	 * @return boolean returns true on successfully login else false
+	 * @return boolean returns true on successfully login else false.
 	 */
 	public function check_login() {
 
@@ -133,7 +137,7 @@ class LDAPLoginHandler extends Object implements LoginHandler
 	 * This is called within the login page without posting something and is used for Single Sign On's like openID, shibboleth or Facebook.
 	 * This is a direct check if the user is logged in without a need to provide credentials.
 	 *
-	 * @return boolean returns true on successfully login else false
+	 * @return boolean returns true on successfully login else false.
 	 */
 	public function pre_validate_login() {
 		return false;
@@ -144,11 +148,11 @@ class LDAPLoginHandler extends Object implements LoginHandler
 	 * or update the old one, also update the last login time.
 	 *
 	 * @param string $username
-	 *   the username
+	 *   the username.
 	 * @param string $password
-	 *   the crypted password
+	 *   the crypted password.
 	 *
-	 * @return boolean return true if provided credentials are valid, else false
+	 * @return boolean return true if provided credentials are valid, else false.
 	 */
 	public function validate_login($username, $password) {
 
@@ -156,7 +160,7 @@ class LDAPLoginHandler extends Object implements LoginHandler
 		if (empty($password)) {
 			return false;
 		}
-		
+
 		// Get all enabled ldap authentication configs.
 		$filter = DatabaseFilter::create(LdapAuthenticationConfigObj::TABLE)
 			->add_column('id')
@@ -226,7 +230,7 @@ class LDAPLoginHandler extends Object implements LoginHandler
 	 * @param int $user_id
 	 *   the user id.
 	 * @param int $address_id
-	 *   the address id (optional, default = 0)
+	 *   the address id. (optional, default = 0)
 	 *
 	 * @return boolean true if no errors occured, else false.
 	 */
