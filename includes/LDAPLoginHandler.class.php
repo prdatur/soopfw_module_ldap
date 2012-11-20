@@ -161,7 +161,6 @@ class LDAPLoginHandler extends Object implements LoginHandler
 		if (empty($password)) {
 			return false;
 		}
-
 		// Get all enabled ldap authentication configs.
 		$filter = DatabaseFilter::create(LdapAuthenticationConfigObj::TABLE)
 			->add_column('id')
@@ -196,7 +195,7 @@ class LDAPLoginHandler extends Object implements LoginHandler
 
 				// User did not exist, create a new one.
 				$user_obj->username = $username;
-				$user_obj->password = 'LDAP_ACCOUNT';
+				$user_obj->account_type = 'ldap';
 				$user_obj->language = $this->core->current_language;
 				$user_obj->registered = date(DB_DATETIME, TIME_NOW);
 				$user_obj->last_login = date(DB_DATETIME, TIME_NOW);
@@ -206,6 +205,8 @@ class LDAPLoginHandler extends Object implements LoginHandler
 					$user_obj = new UserObj();
 					continue;
 				}
+
+				SystemHelper::audit(t('User created from LDAP-LoginHandler "@username".', array('@username' => $username)), 'session', SystemLogObj::LEVEL_NOTICE);
 			}
 			else {
 				// Get the default address id which should be updated if wanted.
@@ -213,7 +214,19 @@ class LDAPLoginHandler extends Object implements LoginHandler
 				$address_id = $address['id'];
 			}
 
+			// Verify that the loaded user is an ldap user.
+			if ($user_obj->account_type != 'ldap') {
+				$this->core->message(t('This username is already taken from another login handler, Sorry you can not use this username anymore.'), Core::MESSAGE_TYPE_ERROR);
+				return false;
+			}
+
+			// User must exist
+			if(!$user_obj->load_success()) {
+				return false;
+			}
+
 			// Check if we have now a valid user object, if update the user address if wanted.
+			// We need also to check that the account type is an ldap account.
 			if (!$user_obj->load_success() || !$this->update_user_address($row['id'], $user_obj->user_id, $address_id)) {
 				return false;
 			}
