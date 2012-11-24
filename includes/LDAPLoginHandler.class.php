@@ -66,7 +66,7 @@ class LDAPLoginHandler extends AbstractLoginHandler implements LoginHandler
 				$user_obj->last_login = date(DB_DATETIME, TIME_NOW);
 
 				// Insert the data.
-				if (!$user_obj->insert(false, false)) {
+				if (!$user_obj->create_account(null, false, false)) {
 					$user_obj = new UserObj();
 					continue;
 				}
@@ -186,6 +186,20 @@ class LDAPLoginHandler extends AbstractLoginHandler implements LoginHandler
 
 		// Update the address object.
 		$user_address->set_fields($values);
+
+		// Prevent updating an email address if it already exist for a different account and system is configurated to accept only unique emails.
+		if (!empty($user_address->values_changed['email']) && $this->core->get_dbconfig("user", user::CONFIG_SIGNUP_UNIQUE_EMAIL, 'no') == 'yes') {
+			$filter = DatabaseFilter::create(UserAddressObj::TABLE)
+				->add_where('email', $user_address->values_changed['email'])
+
+				// Duplicated emails are just allowed within the same user.
+				->add_where('user_id', $user_obj->user_id, '!=');
+
+			// Change back the email to the original one if we have already the new email within another user.
+			if ($filter->select_first()) {
+				$user_address->email = $user_address->get_original_value('email');
+			}
+		}
 		return $user_address->save_or_insert();
 	}
 }

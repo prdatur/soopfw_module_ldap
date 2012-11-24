@@ -242,14 +242,14 @@ class Ldap extends ActionModul {
 
 					// Setup success message.
 					$form->get_object()->transaction_auto_commit();
-					$this->core->message("Server saved ", Core::MESSAGE_TYPE_SUCCESS, true, $form->get_values(true));
+					$this->core->message(t("Server saved"), Core::MESSAGE_TYPE_SUCCESS, true, $form->get_values(true));
 
 				}
 				else {
 
 					// Server infos not correct.
 					$form->get_object()->transaction_auto_rollback();
-					$this->core->message("Could not connect to LDAP server", Core::MESSAGE_TYPE_ERROR, true);
+					$this->core->message(t("Could not connect to LDAP server"), Core::MESSAGE_TYPE_ERROR, true);
 
 				}
 
@@ -258,7 +258,7 @@ class Ldap extends ActionModul {
 
 				// Else setup error message.
 				$form->get_object()->transaction_auto_rollback();
-				$this->core->message("Error while saving server", Core::MESSAGE_TYPE_ERROR, true);
+				$this->core->message(t("Error while saving server"), Core::MESSAGE_TYPE_ERROR, true);
 
 			}
 		}
