@@ -14,7 +14,7 @@ Soopfw.behaviors.ldap_admin_manage = function() {
 
 	// Open edit dialog.
 	$(".edit_server").off('click').on('click', function() {
-		add_server_uuid = Soopfw.default_action_dialog(Soopfw.t("Save server"), $(this).attr('href'), true);
+		add_server_uuid = Soopfw.default_action_dialog(Soopfw.t("Save server"), 'ldap', 'save_server', [$(this).attr('did')]);
 	});
 
 	// Bind cancel event for add/edit dialogs.

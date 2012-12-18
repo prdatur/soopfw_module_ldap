@@ -14,7 +14,7 @@
 	<%foreach from=$servers item=server%>
 		<tr id="server_row_<%$server.id%>">
 			<td style="text-align: center;"><input type="checkbox" name="selected[]" value="<%$server.id%>" id="dmySelect_<%$server.id%>" class="dmySelect input_checkbox"/></td>
-			<td style="text-align: left;"><a href="/ldap/save_server/<%$server.id%>" class="edit_server" onclick="return false;"><span><%$server.server%></span></a></td>
+			<td style="text-align: left;"><a href="javascript:void(0);" did="<%$server.id%>" class="edit_server"><span><%$server.server%></span></a></td>
 			<td style="text-align: center;" class="linkedElement_grey dmyDelete" did="<%$server.id%>"><img src="/1x1_spacer.gif" class="ui-icon-soopfw ui-icon-soopfw-cancel" title="<%t key='delete?'%>" alt="<%t key='delete?'%>"></td>
 		</tr>
 	<%foreachelse%>
