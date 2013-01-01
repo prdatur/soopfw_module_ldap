@@ -200,7 +200,7 @@ class Ldap extends ActionModul {
 		$filter->offset($pager->get_offset());
 
 		//Assign found results
-		$this->smarty->assign_by_ref("servers", $filter->select_all());
+		$this->smarty->assign("servers", $filter->select_all());
 	}
 
 	/**
